@@ -33,7 +33,7 @@ servers:
 tags:
   - name: Bulk SMS
     description: Send Bulk Promotional or/and Transactional messages
-  - name: Premium SMS
+  - name: Premium SMS/ subscription sms
     description: Premium Sms Messages
 paths:
   /outbox/create:
