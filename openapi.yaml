@@ -23,7 +23,7 @@ This endpoint is used to get an authorization token from the server. The token w
   x-logo:
     url: https://app.sms.swifttdial.com/assets/logo.png
   license:
-    name: Apache 2.0
+    name: A
     url: 'https://app.sms.swifttdial.com'
 servers:
   - url: https://bulkdev.swifttdial.com:2778
