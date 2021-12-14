@@ -20,12 +20,11 @@ This endpoint is used to get an authorization token from the server. The token w
     name: Customer API Support
     url: https://swifttdial.com/contact-us/
     email: tech@swifttdial.com
-  version: '1.0'
   x-logo:
     url: https://app.sms.swifttdial.com/assets/logo.png
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: 'https://app.sms.swifttdial.com'
 servers:
   - url: https://bulkdev.swifttdial.com:2778
     description: Sandbox server
@@ -452,8 +451,9 @@ components:
       type: string
       description: An enumeration.
       enum:
-        - 1 (promotional)
-        - 2 (transactional)
+        - 1 
+        - 2
+        - 3
     BulkSMSRequestType:
       title: BulkSMSMessageRequestType
       type: string
@@ -499,7 +499,7 @@ components:
         external_id:
           title: external Id
           type: string
-        mobile_number:
+        recipient:
           title: Mobile Number
           type: string
         sms_count:
@@ -531,7 +531,7 @@ components:
       required:
         - link_id
         - message
-        - mobile_number
+        - recipient
         - profile_code
       type: object
       properties:
@@ -541,7 +541,7 @@ components:
           type: string
           description: Linked to specific sms product configuration
           example: '12345'
-        mobile_number:
+        recipient:
           title: Mobile Number
           maxLength: 12
           minLength: 12
@@ -604,16 +604,15 @@ components:
         event_type: sms_delivery_status
         created_at: '1594868435'
         data:
-          message_id: abf540aa89cac71985b3a278
-          message_ref: 76387871a0bd4f44afcbf3af8fb53054
+          external_id: abf540aa89cac71985b3a278
           status: delivered
-          status_reason: delivered_to_terminal
+          status_reason: delivered
           status_description: Message Delivered to the User's mobile device
     PremiumSMSMessage:
       title: PremiumSMSMessage
       required:
         - message
-        - mobile_number
+        - recipient
       type: object
       properties:
         mobile_number:
@@ -671,21 +670,20 @@ components:
     PremiumSMSResponse:
       title: PremiumSMSResponse
       required:
-        - message_id
+        - external_id
         - mobile_number
       type: object
       properties:
         message_id:
-          title: Message Id
+          title: external_id
           type: string
         message_ref:
           title: Message Ref
           type: string
         mobile_number:
-          title: Mobile Number
+          title: recipient
           type: string
       example:
-        message_id: abf540aa89cac71985b3a278
         message_ref: 76387871a0bd4f44afcbf3af8fb53054
         mobile_number: 2547XXXXXXXX
     PremiumSMSSubscriptionRequest:
