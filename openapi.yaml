@@ -1,0 +1,868 @@
+openapi: 3.0.2
+info:
+  title: SwifttDial VAS Bulk and Premium SMS API
+  description:
+   # Usage Overview 
+   Here are some information that should help you understand
+    the basic usage of our RESTful API. Including info about authenticating
+    users, making requests, responses, potential errors, query parameters and
+    more.
+  # Headers
+   Certain API calls require you to send data in a particular format as part of the API call. By default, all API calls expect input inJSON format, however you need to inform the server that you are sending a JSON-formatted payload. And to do that you must include the Accept => application/json HTTP header with every call.
+   
+  # Authentication
+This endpoint is used to get an authorization token from the server. The token will be used to authenticate requests to protected endpoints.
+
+  version: 1.0.0
+  title: SwifttDial VAS Bulk and Premium SMS API
+  termsOfService: 'https://swifttdial.com/terms-conditions/'
+  contact:
+    name: Customer API Support
+    url: https://swifttdial.com/contact-us/
+    email: tech@swifttdial.com
+  version: '1.0'
+  x-logo:
+    url: https://app.sms.swifttdial.com/assets/logo.png
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: https://bulkdev.swifttdial.com:2778
+    description: Sandbox server
+  - url: //sms.api.swifttdial.com:2778
+    description: Default server
+tags:
+  - name: Bulk SMS
+    description: Send Bulk Promotional or/and Transactional messages
+  - name: Premium SMS
+    description: Premium Sms Messages
+paths:
+  /outbox/create:
+    post:
+      tags:
+        - Bulk SMS
+      summary: Send Bulk Sms
+      description: Send Bulk Promotional or/and Transactional messages
+      operationId: Send_Bulk_SMS_v1_bulksms_messages_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkSMSRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Send Bulk Sms V1 Bulksms Messages Post
+                type: array
+                items:
+                  $ref: '#/components/schemas/BulkSMSResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      callbacks:
+        delivery_receipt:
+          '{$callback_url}':
+            post:
+              summary: Delivery Receipt
+              operationId: delivery_receipt__callback_url__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/BulkSMSDeliveryStatusEvent'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - x-api-key: []
+  /outbox/create{message_ref}:
+    get:
+      tags:
+        - Bulk SMS
+      summary: Message Status
+      description: Check the delivery status of a single/Bulk messages
+      operationId: Message_Status_v1_bulksms_messages_status_get
+      parameters:
+        - name: message_ref
+          in: query
+          required: true
+          style: form
+          explode: true
+          schema:
+            title: Message Ref
+            maxLength: 50
+            minLength: 3
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - x-api-key: []
+  /outbox/creates:
+    post:
+      tags:
+        - Premium SMS
+      summary: Start Subscriptions
+      operationId: Start_Subscriptions_v1_premiumsms_subscriptions_start_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PremiumSMSSubscriptionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PremiumSMSSubscriptionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - x-api-key: []
+  /outbox/create/subscriptions/stop:
+    post:
+      tags:
+        - Premium SMS
+      summary: Stop Subscriptions
+      operationId: Stop_Subscriptions_v1_premiumsms_subscriptions_stop_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PremiumSMSSubscriptionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PremiumSMSUnSubscriptionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - x-api-key: []
+  /outbox/create/premiumsms/messages:
+    post:
+      tags:
+        - Premium SMS
+      summary: Premium Sms Messages
+      operationId: Premium_SMS_Messages_v1_premiumsms_messages_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PremiumSMSRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                title: Response Premium Sms Messages V1 Premiumsms Messages Post
+                type: array
+                items:
+                  $ref: '#/components/schemas/PremiumSMSResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestError'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      callbacks:
+        sms_inbound_mo:
+          '{$callback_url}':
+            post:
+              summary: Sms Inbound Mo
+              operationId: sms_inbound_mo__callback_url__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/MobileOriginatedSMSEvent'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+        sms_inbound_mt:
+          '{$callback_url}':
+            post:
+              summary: Sms Inbound Mt
+              operationId: sms_inbound_mt__callback_url__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/SubscriptionSMSEvent'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+        sms_delivery_status:
+          '{$callback_url}':
+            post:
+              summary: Sms Delivery Status
+              operationId: sms_delivery_status__callback_url__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/PremiumSMSDeliveryStatusEvent'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+      security:
+        - x-api-key: []
+components:
+  schemas:
+    ActorType:
+      title: ActorType
+      type: string
+      description: An enumeration.
+      enum:
+        - system
+        - user
+    BulkSMSDeliveryStatusEvent:
+      title: BulkSMSDeliveryStatusEvent
+      required:
+        - actor_type
+        - created_at
+        - data
+        - event_type
+        - uid
+      type: object
+      properties:
+        uid:
+          title: Uid
+          type: string
+        actor_type:
+          $ref: '#/components/schemas/ActorType'
+        event_type:
+          $ref: '#/components/schemas/EventType'
+        created_at:
+          title: Created At
+          type: string
+        data:
+          $ref: '#/components/schemas/SMSDeliveryStatus'
+      example:
+        uid: 45$045ea8b3abf540aa89cac71985b3a278
+        actor_type: system
+        event_type: sms_delivery_status
+        created_at: '1594868435'
+        data:
+          message_id: abf540aa89cac71985b3a278
+          message_ref: 76387871a0bd4f44afcbf3af8fb53054
+          status: delivered
+          status_reason: delivered_to_terminal
+          status_description: Message Delivered to the User's mobile device
+    BulkSMSMessage:
+      title: BulkSMSMessage
+      required:
+        - recipient
+        - message
+        - message_type
+        - req_type
+      type: object
+      properties:
+        mobile_number:
+          title: Recipient number
+          maxLength: 12
+          minLength: 12
+          pattern: ^2547\d{8}$|2541\d{8}$
+          type: string
+          example: 2547XXXXXXXX
+        message:
+          title: Text Message
+          maxLength: 785
+          minLength: 1
+          type: string
+          description: Message to send to recipient(s)
+          example: Hello, It works!
+        message_type:
+          title: Message Type
+          allOf:
+            - $ref: '#/components/schemas/BulkSMSMessageType'
+        req_type:
+          title: Request Type
+          allOf:
+            - $ref: '#/components/schemas/BulkSMSRequestType'
+        external_id:
+          title: Message Unique Reference
+          maxLength: 50
+          type: string
+          description: Unique reference number that you generate when sending bulk outbox
+          example: 76387871a0bd4f44afcbf3af8fb53054
+    BulkSMSMessageType:
+      title: BulkSMSMessageType
+      type: string
+      description: An enumeration.
+      enum:
+        - 1 (promotional)
+        - 2 (transactional)
+    BulkSMSRequestType:
+      title: BulkSMSMessageRequestType
+      type: string
+      description: An enumeration.
+      enum:
+        - 1
+        - 2
+        - 3
+    BulkSMSRequest:
+      title: BulkSMSRequest
+      required:
+        - messages
+        - profile_code
+      type: object
+      properties:
+        profile_code:
+          title: Profile Code
+          pattern: \d+
+          type: string
+          description: Linked to specific sms product configuration
+          example: '12345'
+        messages:
+          title: Messages
+          maxItems: 20
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkSMSMessage'
+        dlr_callback_url:
+          title: Dlr Callback Url
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+    BulkSMSResponse:
+      title: BulkSMSResponse
+      required:
+        - external_id
+        - mobile_number
+        - sms_count
+      type: object
+      properties:
+        external_id:
+          title: external Id
+          type: string
+        mobile_number:
+          title: Mobile Number
+          type: string
+        sms_count:
+          title: Sms Count
+          type: integer
+      example:
+        external_id: abf540aa89cac71985b3a278
+        recipient: 2547XXXXXXXX
+        sms_count: X
+    EventType:
+      title: EventType
+      type: string
+      description: An enumeration.
+      enum:
+        - sms_delivery_status
+        - sms_mo_inbound
+        - sms_mt_inbound
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+    MobileOriginatedSMSData:
+      title: MobileOriginatedSMSData
+      required:
+        - link_id
+        - message
+        - mobile_number
+        - profile_code
+      type: object
+      properties:
+        profile_code:
+          title: Profile Code
+          pattern: \d+
+          type: string
+          description: Linked to specific sms product configuration
+          example: '12345'
+        mobile_number:
+          title: Mobile Number
+          maxLength: 12
+          minLength: 12
+          pattern: ^2547\d{8}$|2541\d{8}$
+          type: string
+          example: 2547XXXXXXXX
+        link_id:
+          title: Link Id
+          type: string
+        message:
+          title: Message
+          type: string
+    MobileOriginatedSMSEvent:
+      title: MobileOriginatedSMSEvent
+      required:
+        - created_at
+        - data
+        - uid
+      type: object
+      properties:
+        uid:
+          title: Uid
+          type: string
+        actor_type:
+          allOf:
+            - $ref: '#/components/schemas/ActorType'
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/EventType'
+        created_at:
+          title: Created At
+          type: string
+        data:
+          $ref: '#/components/schemas/MobileOriginatedSMSData'
+    PremiumSMSDeliveryStatusEvent:
+      title: PremiumSMSDeliveryStatusEvent
+      required:
+        - actor_type
+        - created_at
+        - data
+        - event_type
+        - uid
+      type: object
+      properties:
+        uid:
+          title: Uid
+          type: string
+        actor_type:
+          $ref: '#/components/schemas/ActorType'
+        event_type:
+          $ref: '#/components/schemas/EventType'
+        created_at:
+          title: Created At
+          type: string
+        data:
+          $ref: '#/components/schemas/SMSDeliveryStatus'
+      example:
+        uid: 45$045ea8b3abf540aa89cac71985b3a278
+        actor_type: system
+        event_type: sms_delivery_status
+        created_at: '1594868435'
+        data:
+          message_id: abf540aa89cac71985b3a278
+          message_ref: 76387871a0bd4f44afcbf3af8fb53054
+          status: delivered
+          status_reason: delivered_to_terminal
+          status_description: Message Delivered to the User's mobile device
+    PremiumSMSMessage:
+      title: PremiumSMSMessage
+      required:
+        - message
+        - mobile_number
+      type: object
+      properties:
+        mobile_number:
+          title: Mobile Number
+          maxLength: 12
+          minLength: 12
+          pattern: ^2547\d{8}$|2541\d{8}$
+          type: string
+          example: 2547XXXXXXXX
+        message:
+          title: Text Message
+          maxLength: 10000
+          minLength: 1
+          type: string
+          description: Message to send to recipient(s)
+          example: Hello, It works!
+        message_ref:
+          title: Message Unique Reference
+          maxLength: 50
+          type: string
+          description: To be provided by external services
+          example: 76387871a0bd4f44afcbf3af8fb53054
+        link_id:
+          title: Link ID
+          maxLength: 100
+          type: string
+          description: Link ID Received for MO Inbound SMS
+          example: '12340000'
+    PremiumSMSRequest:
+      title: PremiumSMSRequest
+      required:
+        - messages
+        - profile_code
+      type: object
+      properties:
+        profile_code:
+          title: Profile Code
+          pattern: \d+
+          type: string
+          description: Linked to specific sms product configuration
+          example: '12345'
+        messages:
+          title: Messages
+          maxItems: 5
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/PremiumSMSMessage'
+        dlr_callback_url:
+          title: Dlr Callback Url
+          maxLength: 2083
+          minLength: 1
+          type: string
+          format: uri
+    PremiumSMSResponse:
+      title: PremiumSMSResponse
+      required:
+        - message_id
+        - mobile_number
+      type: object
+      properties:
+        message_id:
+          title: Message Id
+          type: string
+        message_ref:
+          title: Message Ref
+          type: string
+        mobile_number:
+          title: Mobile Number
+          type: string
+      example:
+        message_id: abf540aa89cac71985b3a278
+        message_ref: 76387871a0bd4f44afcbf3af8fb53054
+        mobile_number: 2547XXXXXXXX
+    PremiumSMSSubscriptionRequest:
+      title: PremiumSMSSubscriptionRequest
+      required:
+        - mobile_number
+        - profile_code
+      type: object
+      properties:
+        profile_code:
+          title: Profile Code
+          pattern: \d+
+          type: string
+          description: Linked to specific sms product configuration
+          example: '12345'
+        mobile_number:
+          title: Mobile Number
+          maxLength: 12
+          minLength: 12
+          pattern: ^2547\d{8}$|2541\d{8}$
+          type: string
+          example: 2547XXXXXXXX
+    PremiumSMSSubscriptionResponse:
+      title: PremiumSMSSubscriptionResponse
+      required:
+        - status
+      type: object
+      properties:
+        status:
+          title: Status
+          type: string
+    PremiumSMSUnSubscriptionResponse:
+      title: PremiumSMSUnSubscriptionResponse
+      required:
+        - status
+      type: object
+      properties:
+        status:
+          title: Status
+          type: string
+    RequestError:
+      title: RequestError
+      type: object
+      properties:
+        code:
+          title: Code
+          type: string
+        description:
+          title: Description
+          type: string
+        detail:
+          title: Detail
+          anyOf:
+            - type: string
+            - type: object
+            - type: array
+              items:
+                type: object
+    SMSDeliveryStatus:
+      title: SMSDeliveryStatus
+      required:
+        - message_id
+        - status
+        - status_reason
+      type: object
+      properties:
+        status:
+          title: Delivery Status
+          description: The State of the SMS Message
+          allOf:
+            - $ref: '#/components/schemas/SMSStatus'
+        status_reason:
+          title: Status Reason
+          description: Explanation on why the delivery status
+          allOf:
+            - $ref: '#/components/schemas/SMSStatusReason'
+        status_description:
+          title: Status Reason
+          type: string
+          description: Detailed information on the delivery status
+          example: Message Delivered to the User's mobile device
+        message_ref:
+          title: Message Ref
+          type: string
+        message_id:
+          title: Message Id
+          type: string
+    SMSStatus:
+      title: SMSStatus
+      type: string
+      description: An enumeration.
+      enum:
+        - queued
+        - sent
+        - delivered
+        - undelivered
+        - failed
+    SMSStatusReason:
+      title: SMSStatusReason
+      type: string
+      description: An enumeration.
+      enum:
+        - delivered_to_terminal
+        - user_in_blacklist
+    SubscriptionOperationType:
+      title: SubscriptionOperationType
+      type: string
+      description: An enumeration.
+      enum:
+        - start
+        - stop
+    SubscriptionSMSData:
+      title: SubscriptionSMSData
+      required:
+        - mobile_number
+        - operation
+        - profile_code
+      type: object
+      properties:
+        profile_code:
+          title: Profile Code
+          pattern: \d+
+          type: string
+          description: Linked to specific sms product configuration
+          example: '12345'
+        mobile_number:
+          title: Mobile Number
+          maxLength: 12
+          minLength: 12
+          pattern: ^2547\d{8}$|2541\d{8}$
+          type: string
+          example: 2547XXXXXXXX
+        operation:
+          $ref: '#/components/schemas/SubscriptionOperationType'
+    SubscriptionSMSEvent:
+      title: SubscriptionSMSEvent
+      required:
+        - created_at
+        - data
+        - uid
+      type: object
+      properties:
+        uid:
+          title: Uid
+          type: string
+        actor_type:
+          allOf:
+            - $ref: '#/components/schemas/ActorType'
+        event_type:
+          allOf:
+            - $ref: '#/components/schemas/EventType'
+        created_at:
+          title: Created At
+          type: string
+        data:
+          $ref: '#/components/schemas/SubscriptionSMSData'
+    ValidationError:
+      title: ValidationError
+      required:
+        - loc
+        - msg
+        - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+  securitySchemes:
+    x-api-key:
+      type: apiKey
+      name: x-api-key
+      in: header

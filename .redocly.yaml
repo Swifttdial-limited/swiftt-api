@@ -1,0 +1,17 @@
+apiDefinitions:
+  # A set of named keys and values of entrypoints to OpenAPI definitions.
+  # Example:
+    caretaker: openapi.yaml
+    lint:
+  # The lint command options
+    resolve:
+  # Configuration for resolving external links in your definition that are not publicly accessible.
+  # Not required for Redocly API registry links.
+  
+    referenceDocs:
+  # The API reference docs options, including theme options.
+  
+    registry:
+  # The API registry options
+  
+  # future products may be configured by extending this file
