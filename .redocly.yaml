@@ -1,7 +1,7 @@
 apiDefinitions:
   # A set of named keys and values of entrypoints to OpenAPI definitions.
   # Example:
-    caretaker: openapi.yaml
+    swifttapi: openapi.yaml
     lint:
   # The lint command options
     resolve:
